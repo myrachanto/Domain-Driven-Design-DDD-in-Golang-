@@ -4,13 +4,18 @@ import (
 	"log"
 	"os"
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
-	"github.com/myrachanto/asoko/categorymicro/controllers"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/myrachanto/ddd/controllers"
+	"github.com/myrachanto/ddd/service"
+	"github.com/myrachanto/ddd/repository"
 )
 
 func ApiMicroservice() {
-
+	// repo := repository.New()
+	// Service := service.NewRedirectService(&repo)
+	// controller := controllers.NewController(Service)
+	controller := controllers.NewController(service.NewRedirectService(repository.New()))
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -24,11 +29,11 @@ func ApiMicroservice() {
 	e.Use(middleware.Recover()) 
 
 	// Routes
-	e.POST("/categorys", controllers.CategoryController.Create)
-	e.GET("/categorys", controllers.CategoryController.GetAll)
-	e.GET("/categorys/:id", controllers.CategoryController.GetOne)
-	e.PUT("/categorys/:id", controllers.CategoryController.Update)
-	e.DELETE("/categorys/:id", controllers.CategoryController.Delete)
+	e.POST("/categorys", controller.Create)
+	e.GET("/categorys", controller.GetAll)
+	e.GET("/categorys/:id", controller.GetOne)
+	e.PUT("/categorys/:id", controller.Update)
+	e.DELETE("/categorys/:id", controller.Delete)
 
 	// Start server
 	e.Logger.Fatal(e.Start(PORT))

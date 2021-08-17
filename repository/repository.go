@@ -1,71 +1,85 @@
 package repository
-import (
-	"log"
+
+import(
 	"os"
-	mgo "gopkg.in/mgo.v2"
+	"log"
+	"fmt"
+	"context"
 	"github.com/joho/godotenv"
-	"github.com/myrachanto/asoko/categorymicro/httperors"
-	"github.com/myrachanto/asoko/categorymicro/model"
+    // "go.mongodb.org/mongo-driver/bson"
+    "go.mongodb.org/mongo-driver/mongo"
+    "go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/myrachanto/ddd/httperors"
+	// "github.com/myrachanto/asokomonolith/support"
 )
+var ctx = context.TODO()
 
-type Redirectrepository interface{
-	Create(category *model.Category) (*model.Category, *httperors.HttpError)
-	GetOne(id string) (*model.Category, *httperors.HttpError)
-	GetAll(categorys []model.Category) ([]model.Category, *httperors.HttpError)
-	Update(id string, category *model.Category) (*model.Category, *httperors.HttpError)
-	Delete(id string) (*httperors.HttpSuccess, *httperors.HttpError)
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-////////////////figure how to switch repositories automatically//////////////////////////////////
-func ChooseRepo() (repository Redirectrepository) {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+func Mongoclient()(*mongo.Client, *httperors.HttpError){
+	err7 := godotenv.Load()
+	if err7 != nil {
+		return nil, httperors.NewBadRequestError("error loading env file")
 	}
-	switch os.Getenv("DbType2") {
-	case "Mongo":
-		_, err1 := NewMongoRepository()
-		if err1 != nil {
-			log.Fatal(err1)
-		}
-		repository = Mongorepository
-		return repository
-	// case "mysql":
-	// 	_, err1 := NewGormRepository()
-	// 	if err1 != nil {
-	// 		log.Fatal(err1)
-	// 	}
-	// 	repository = Sqlrepository
-	// 	// model.CheckMongo(gorm)
-	// 	return repository
-	
-	// case "postgress":
-	// 	repository, err1 := NewMongoRepository()
-	// 	if err1 != nil {
-	// 		log.Fatal(err1)
-	// 	}
-	// 	return repository
-	// case "redis":
-	// 	repository, err1 := NewMongoRepository()
-	// 	if err1 != nil {
-	// 		log.Fatal(err1)
-	// 	}
-	}
-	return
-	
-}
-func NewMongoRepository()(Redirectrepository, error){
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	//Mongo := os.Getenv("MongoDb")
 	host := os.Getenv("Mongohost")
-
-	_, err = mgo.Dial(host)
-	if err != nil{
-		return nil, err
+	clientOptions := options.Client().ApplyURI(host)
+	client, err6 := mongo.Connect(ctx, clientOptions)
+		if err6 != nil {
+		return nil, httperors.NewBadRequestError("Could not connect to mongodb")
 	}
-	return Mongorepository, nil
+	err8 := client.Ping(ctx, nil)
+	if err8 != nil {
+		log.Fatal(err8)
+	}
+	return client, nil
 }
+func Mongodb()(*mongo.Database, *httperors.HttpError){
+	err7 := godotenv.Load()
+	if err7 != nil {
+		return nil, httperors.NewBadRequestError("error loading env file")
+	}
+	mongodb := os.Getenv("MongodbName")
+	client, err1 := Mongoclient()
+	db := client.Database(mongodb)
+	return db, err1
+}
+func DbClose(client *mongo.Client){
+	err := client.Disconnect(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connection to MongoDB closed.")
+}
+// func SearchQuery(Ser *support.Search,  val []interface{})(values []interface{}, err *httperors.HttpError){
+// 	c, t := Mongoclient();if t != nil {
+// 		return nil, t
+// 	}
+// 	db, e := Mongodb();if e != nil {
+// 		return nil, e
+// 	}
+// 	collection := db.Collection("user")
+// 	filter := Ser.Column, 
+// 		bson.D{{
+// 			Ser.Search_operator, 
+// 			bson.A{"Alice", "Bob"}
+// 		}}
+// 	cur, err := collection.Find(ctx, filter)
+// 	if err != nil {
+// 		return nil, httperors.NewBadRequestError(fmt.Sprintf("Could not find resource with this id, %d", err))
+// 	}
+// 	if err != nil { 
+// 		return nil,	httperors.NewNotFoundError("no results found")
+// 	}
+// 	defer cur.Close(ctx)
+// 	for cur.Next(ctx) {
+// 	err := cur.Decode(&users)
+// 		if err != nil { 
+// 			return nil,	httperors.NewNotFoundError("Error while decoding results!")
+// 		}
+// 	// do something with result....
+// 	}
+// 	if err := cur.Err(); err != nil {
+// 		return nil,	httperors.NewNotFoundError(fmt.Sprintf("Could not find resource with this id, %d", err))
+// 	}	
+// 	DbClose(c)
+//     return users, nil
+
+// }

@@ -2,16 +2,17 @@ package model
 
 import(
 	"time"
-	"gopkg.in/mgo.v2/bson"
-	"github.com/myrachanto/asoko/categorymicro/httperors"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/myrachanto/ddd/httperors"
 )
 
 type Category struct {
-	Id bson.ObjectId `bson:"_id"`
-	Name string `bson:"name"`
-	Title string `bson:"title"`
-	Description string `bson:"description"`
-	Base
+	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Name        string        `json:"name,omitempty"`
+	Title       string        `json:"title,omitempty"`
+	Description string        `json:"description,omitempty"`
+	Code        string        `json:"code,omitempty"`
+	Base        `json:"base,omitempty"`
 }
 type Base struct{
 	Created_At time.Time `bson:"created_at"`

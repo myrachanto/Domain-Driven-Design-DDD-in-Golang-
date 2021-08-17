@@ -1,43 +1,60 @@
 package controllers
 
-import(
-	//"fmt"	
+import (
+	//"fmt"
+	"fmt"
 	"net/http"
-	"github.com/labstack/echo"
-	"github.com/myrachanto/asoko/categorymicro/httperors"
-	"github.com/myrachanto/asoko/categorymicro/model"
-	"github.com/myrachanto/asoko/categorymicro/service"
+
+	"github.com/labstack/echo/v4"
+	"github.com/myrachanto/ddd/httperors"
+	"github.com/myrachanto/ddd/model"
+	s "github.com/myrachanto/ddd/service"
 )
  
 var (
 	CategoryController categoryController = categoryController{}
 )
-type categoryController struct{ }
+type categoryController struct{
+	service s.CategoryserviceInterface
+}
+type CategoryInterface interface {
+	Create(echo.Context) error
+	GetAll(echo.Context) error
+	GetOne(echo.Context) error
+	Update(echo.Context) error
+	Delete(echo.Context) error
+}
+func NewController(service s.CategoryserviceInterface)CategoryInterface{
+ return &categoryController{
+	 service: service,
+ }
+}
 /////////controllers/////////////////
 func (controller categoryController) Create(c echo.Context) error {
 	category := &model.Category{}
 	if err := c.Bind(category); err != nil {
 		httperror := httperors.NewBadRequestError("Invalid json body")
 		return c.JSON(httperror.Code, httperror)
-	}	
-	createdcategory, err1 := service.CategoryService.Create(category)
+	}
+	fmt.Println("cats................", category)
+	err1 := controller.service.Create(category)
 	if err1 != nil {
 		return c.JSON(err1.Code, err1)
 	}
-	return c.JSON(http.StatusCreated, createdcategory)
+	return c.JSON(http.StatusCreated, "created successifully")
 }
 
 func (controller categoryController) GetAll(c echo.Context) error {
-	categorys := []model.Category{}
-	categorys, err3 := service.CategoryService.GetAll(categorys)
+	search := c.QueryParam("search")
+	categorys, err3 := controller.service.GetAll(search)
 	if err3 != nil {
 		return c.JSON(err3.Code, err3)
 	}
 	return c.JSON(http.StatusOK, categorys)
 } 
 func (controller categoryController) GetOne(c echo.Context) error {
-	id := string(c.Param("id"))
-	category, problem := service.CategoryService.GetOne(id)
+	id := c.Param("id")
+	category, problem := controller.service.GetOne(id)
 	if problem != nil {
 		return c.JSON(problem.Code, problem)
 	}
@@ -50,17 +67,17 @@ func (controller categoryController) Update(c echo.Context) error {
 		httperror := httperors.NewBadRequestError("Invalid json body")
 		return c.JSON(httperror.Code, httperror)
 	}	
-	id := string(c.Param("id"))
-	Updatedcategory, problem := service.CategoryService.Update(id, category)
+	id := c.Param("id")
+	problem := controller.service.Update(id, category)
 	if problem != nil {
 		return c.JSON(problem.Code, problem)
 	}
-	return c.JSON(http.StatusOK, Updatedcategory)
+	return c.JSON(http.StatusOK, "updated successifully")
 }
 
 func (controller categoryController) Delete(c echo.Context) error {
-	id := string(c.Param("id"))
-	success, failure := service.CategoryService.Delete(id)
+	id := c.Param("id")
+	success, failure := controller.service.Delete(id)
 	if failure != nil {
 		return c.JSON(failure.Code, failure)
 	}

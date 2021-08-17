@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/myrachanto/asoko/categorymicro/routes"
+	"github.com/myrachanto/ddd/routes"
 )
 func main() {
  routes.ApiMicroservice()
