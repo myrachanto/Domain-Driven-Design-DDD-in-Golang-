@@ -32,3 +32,22 @@ func (category Category) Validate() *httperors.HttpError{
 	}
 	return nil
 }
+func (c Category) ValidateTitle() *httperors.HttpError{
+	if c.Title == "" {
+		return httperors.NewNotFoundError("Invalid title")
+	}
+	return nil
+}
+func (c Category) ValidateName() *httperors.HttpError{
+	if c.Name == "" {
+		return httperors.NewNotFoundError("Invalid Name")
+	}
+	return nil
+}
+
+func (c Category) ValidateDescription() *httperors.HttpError{
+	if c.Name == "" {
+		return httperors.NewNotFoundError("Invalid Description")
+	}
+	return nil
+}

@@ -12,74 +12,59 @@ import(
 	"github.com/myrachanto/ddd/httperors"
 	// "github.com/myrachanto/asokomonolith/support"
 )
-var ctx = context.TODO()
+var (
+	Mongorepo mongorepointerface = &mongorepo{}
+	ctx = context.TODO()
+	Host string = ""
+)
+type mongorepointerface interface{
+	Mongoclient()(*mongo.Client, *httperors.HttpError)
+	Mongodb()(*mongo.Database, *httperors.HttpError)
+	DbClose(client *mongo.Client)
+	gethost()*httperors.HttpError
+	DBPing(p *mongo.Client)(string,*httperors.HttpError)
+}
+type mongorepo struct{}
 
-func Mongoclient()(*mongo.Client, *httperors.HttpError){
-	err7 := godotenv.Load()
-	if err7 != nil {
-		return nil, httperors.NewBadRequestError("error loading env file")
-	}
-	host := os.Getenv("Mongohost")
-	clientOptions := options.Client().ApplyURI(host)
+func (m *mongorepo)Mongoclient()(*mongo.Client, *httperors.HttpError){
+	m.gethost()
+	clientOptions := options.Client().ApplyURI(Host)
 	client, err6 := mongo.Connect(ctx, clientOptions)
 		if err6 != nil {
 		return nil, httperors.NewBadRequestError("Could not connect to mongodb")
-	}
-	err8 := client.Ping(ctx, nil)
-	if err8 != nil {
-		log.Fatal(err8)
-	}
+	}	
 	return client, nil
 }
-func Mongodb()(*mongo.Database, *httperors.HttpError){
+func (m *mongorepo)Mongodb()(*mongo.Database, *httperors.HttpError){
 	err7 := godotenv.Load()
 	if err7 != nil {
 		return nil, httperors.NewBadRequestError("error loading env file")
 	}
 	mongodb := os.Getenv("MongodbName")
-	client, err1 := Mongoclient()
+	client, err1 := m.Mongoclient()
 	db := client.Database(mongodb)
 	return db, err1
 }
-func DbClose(client *mongo.Client){
+func (m *mongorepo)DbClose(client *mongo.Client){
 	err := client.Disconnect(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("Connection to MongoDB closed.")
 }
-// func SearchQuery(Ser *support.Search,  val []interface{})(values []interface{}, err *httperors.HttpError){
-// 	c, t := Mongoclient();if t != nil {
-// 		return nil, t
-// 	}
-// 	db, e := Mongodb();if e != nil {
-// 		return nil, e
-// 	}
-// 	collection := db.Collection("user")
-// 	filter := Ser.Column, 
-// 		bson.D{{
-// 			Ser.Search_operator, 
-// 			bson.A{"Alice", "Bob"}
-// 		}}
-// 	cur, err := collection.Find(ctx, filter)
-// 	if err != nil {
-// 		return nil, httperors.NewBadRequestError(fmt.Sprintf("Could not find resource with this id, %d", err))
-// 	}
-// 	if err != nil { 
-// 		return nil,	httperors.NewNotFoundError("no results found")
-// 	}
-// 	defer cur.Close(ctx)
-// 	for cur.Next(ctx) {
-// 	err := cur.Decode(&users)
-// 		if err != nil { 
-// 			return nil,	httperors.NewNotFoundError("Error while decoding results!")
-// 		}
-// 	// do something with result....
-// 	}
-// 	if err := cur.Err(); err != nil {
-// 		return nil,	httperors.NewNotFoundError(fmt.Sprintf("Could not find resource with this id, %d", err))
-// 	}	
-// 	DbClose(c)
-//     return users, nil
-
-// }
+func (m *mongorepo)gethost()*httperors.HttpError{
+	err := godotenv.Load()
+	if err != nil {
+		return  httperors.NewBadRequestError("error loading env file")
+	}
+	host := os.Getenv("Mongohost")
+	Host = host
+	return nil
+}
+func (m *mongorepo)DBPing(p *mongo.Client)(string,*httperors.HttpError){
+	err8 := p.Ping(ctx, nil)
+	if err8 != nil {
+		return "", httperors.NewBadRequestError("Could not ping the db")
+	}
+	return "Db connection was succesiful", nil
+}

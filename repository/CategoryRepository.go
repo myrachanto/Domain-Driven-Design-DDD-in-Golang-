@@ -30,14 +30,14 @@ func New() *categoryrepository {
 type categoryrepository struct{}
 
 func (r *categoryrepository) Create(category *model.Category) *httperors.HttpError {
-	if err1 := category.Validate(); err1 != nil {
-		return err1
-	}
-	c, t := Mongoclient()
+	// if err1 := category.Validate(); err1 != nil {
+	// 	return err1
+	// }
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return e
 	}
@@ -51,16 +51,16 @@ func (r *categoryrepository) Create(category *model.Category) *httperors.HttpErr
 	if err != nil {
 		return httperors.NewBadRequestError(fmt.Sprintf("Create Category Failed, %d", err))
 	}
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return nil
 }
 
 func (r *categoryrepository) GetOne(id string) (category *model.Category, errors *httperors.HttpError) {
-	c, t := Mongoclient()
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return nil, t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return nil, e
 	}
@@ -74,16 +74,16 @@ func (r *categoryrepository) GetOne(id string) (category *model.Category, errors
 	if err != nil {
 		return nil, httperors.NewBadRequestError(fmt.Sprintf("Could not find resource with this id, %d", err))
 	}
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return category, nil
 }
 
 func (r *categoryrepository) GetAll(code string) ([]*model.Category, *httperors.HttpError) {
-	c, t := Mongoclient()
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return nil, t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return nil, e
 	}
@@ -107,17 +107,17 @@ func (r *categoryrepository) GetAll(code string) ([]*model.Category, *httperors.
 	if err := cur.Err(); err != nil {
 		return nil, httperors.NewNotFoundError("Error with cursor!")
 	}
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return categorys, nil
 
 }
 
 func (r *categoryrepository) Update(code string, category *model.Category) *httperors.HttpError {
-	c, t := Mongoclient()
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return e
 	}
@@ -147,15 +147,15 @@ func (r *categoryrepository) Update(code string, category *model.Category) *http
 	if err != nil {
 		return httperors.NewNotFoundError("Error updating!")
 	}
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return nil
 }
 func (r categoryrepository) Delete(id string) (*httperors.HttpSuccess, *httperors.HttpError) {
-	c, t := Mongoclient()
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return nil, t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return nil, e
 	}
@@ -165,15 +165,15 @@ func (r categoryrepository) Delete(id string) (*httperors.HttpSuccess, *httperor
 	if ok == nil {
 		return nil, httperors.NewNotFoundError(fmt.Sprintf("deletion of %d failed", err))
 	}
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return httperors.NewSuccessMessage("deleted successfully"), nil
 }
 func (r categoryrepository) genecode() (string, *httperors.HttpError) {
-	c, t := Mongoclient()
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return "", t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return "", e
 	}
@@ -186,15 +186,15 @@ func (r categoryrepository) genecode() (string, *httperors.HttpError) {
 	}
 	code := "CategoryCode" + strconv.FormatUint(uint64(co), 10)
 
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return code, nil
 }
 func (r categoryrepository) getuno(code string) (result *model.Category, err *httperors.HttpError) {
-	c, t := Mongoclient()
+	c, t := Mongorepo.Mongoclient()
 	if t != nil {
 		return nil, t
 	}
-	db, e := Mongodb()
+	db, e := Mongorepo.Mongodb()
 	if e != nil {
 		return nil, e
 	}
@@ -204,6 +204,6 @@ func (r categoryrepository) getuno(code string) (result *model.Category, err *ht
 	if err1 != nil {
 		return nil, httperors.NewNotFoundError("no results found")
 	}
-	DbClose(c)
+	Mongorepo.DbClose(c)
 	return result, nil
 }

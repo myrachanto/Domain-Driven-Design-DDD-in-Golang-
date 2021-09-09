@@ -23,6 +23,7 @@ type CategoryInterface interface {
 	GetOne(echo.Context) error
 	Update(echo.Context) error
 	Delete(echo.Context) error
+	Getproducts(echo.Context) error
 }
 func NewController(service s.CategoryserviceInterface)CategoryInterface{
  return &categoryController{
@@ -47,6 +48,14 @@ func (controller categoryController) Create(c echo.Context) error {
 func (controller categoryController) GetAll(c echo.Context) error {
 	search := c.QueryParam("search")
 	categorys, err3 := controller.service.GetAll(search)
+	if err3 != nil {
+		return c.JSON(err3.Code, err3)
+	}
+	return c.JSON(http.StatusOK, categorys)
+} 
+func (controller categoryController) Getproducts(c echo.Context) error {
+	search := c.QueryParam("search")
+	categorys, err3 := controller.service.Getproducts(search)
 	if err3 != nil {
 		return c.JSON(err3.Code, err3)
 	}
