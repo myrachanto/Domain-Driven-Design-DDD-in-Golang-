@@ -32,20 +32,20 @@ type CategoryMockInterface interface{
 func (mock MockRepository)Create(category *model.Category) (*model.Category,*httperors.HttpError){
 	args := mock.Called()
 	result := args.Get(0)
-	blog, err := result.(*model.Category), args.Error(1)
+	blog, err := result.(model.Category), args.Error(1)
 	if err != nil {
 		return nil, httperors.NewBadRequestError("Something went wrong creating a product")
 	}
-	return blog, nil
+	return &blog, nil
 }
 func (mock MockRepository)GetOne(id string) (*model.Category, *httperors.HttpError){
 	args := mock.Called()
 	result := args.Get(0)
-	category, err := result.(*model.Category), args.Error(1)
+	category, err := result.(model.Category), args.Error(1)
 	if err != nil {
 		return nil, httperors.NewNotFoundError("test failed")
 	}
-	return category,nil
+	return &category,nil
 }
 func TestCategoryNameValidate(t *testing.T){ 
 	category = &model.Category{
@@ -71,11 +71,11 @@ func TestCategoryTitleValidate(t *testing.T){
 }
 func TestCategoryDescriptionValidate(t *testing.T){ 
 	category = &model.Category{
-		Name: "",
+		Name: "name",
 		Title: "tilte",
 		Description: "",
 	}
-	err := category.ValidateTitle()
+	err := category.ValidateDescription()
 	expected := "Invalid Description"
 	assert.NotNil(t, err)
 	assert.Equal(t, expected, err.Message)

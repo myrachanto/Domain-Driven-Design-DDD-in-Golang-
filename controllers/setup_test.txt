@@ -1,0 +1,26 @@
+package controllers
+
+
+func getroutes(){
+	controller := NewController(service.NewRedirectService(repository.New()))
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	PORT := os.Getenv("PORT")
+
+	e := echo.New()
+	// Middleware
+	log.Info("app initialized")
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover()) 
+
+	// Routes
+	e.POST("/categorys", controller.Create)
+	e.GET("/categorys", controller.GetAll)
+	e.GET("/categorys/:id", controller.GetOne)
+	e.GET("/products", controller.Getproducts)
+	e.PUT("/categorys/:id", controller.Update)
+	e.DELETE("/categorys/:id", controller.Delete)
+	
+}

@@ -17,7 +17,7 @@ var (
 type categoryController struct{
 	service s.CategoryserviceInterface
 }
-type CategoryInterface interface {
+type CategoryInterface interface { 
 	Create(echo.Context) error
 	GetAll(echo.Context) error
 	GetOne(echo.Context) error

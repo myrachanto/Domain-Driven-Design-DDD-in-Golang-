@@ -19,7 +19,7 @@ var (
 )
 type mongorepointerface interface{
 	Mongoclient()(*mongo.Client, *httperors.HttpError)
-	Mongodb()(*mongo.Database, *httperors.HttpError)
+	Mongodb()(*mongo.Database,*mongo.Client, *httperors.HttpError)
 	DbClose(client *mongo.Client)
 	gethost()*httperors.HttpError
 	DBPing(p *mongo.Client)(string,*httperors.HttpError)
@@ -35,15 +35,15 @@ func (m *mongorepo)Mongoclient()(*mongo.Client, *httperors.HttpError){
 	}	
 	return client, nil
 }
-func (m *mongorepo)Mongodb()(*mongo.Database, *httperors.HttpError){
+func (m *mongorepo)Mongodb()(*mongo.Database,*mongo.Client, *httperors.HttpError){
 	err7 := godotenv.Load()
 	if err7 != nil {
-		return nil, httperors.NewBadRequestError("error loading env file")
+		return nil, nil, httperors.NewBadRequestError("error loading env file")
 	}
 	mongodb := os.Getenv("MongodbName")
 	client, err1 := m.Mongoclient()
 	db := client.Database(mongodb)
-	return db, err1
+	return db,client, err1
 }
 func (m *mongorepo)DbClose(client *mongo.Client){
 	err := client.Disconnect(ctx)

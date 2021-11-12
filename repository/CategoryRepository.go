@@ -33,11 +33,7 @@ func (r *categoryrepository) Create(category *model.Category) *httperors.HttpErr
 	// if err1 := category.Validate(); err1 != nil {
 	// 	return err1
 	// }
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return t
-	}
-	db, e := Mongorepo.Mongodb()
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
 		return e
 	}
@@ -56,13 +52,10 @@ func (r *categoryrepository) Create(category *model.Category) *httperors.HttpErr
 }
 
 func (r *categoryrepository) GetOne(id string) (category *model.Category, errors *httperors.HttpError) {
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return nil, t
-	}
-	db, e := Mongorepo.Mongodb()
+	
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
-		return nil, e
+		return nil,e
 	}
 	collection := db.Collection("category")
 	idPrimitive, err := primitive.ObjectIDFromHex(id)
@@ -79,13 +72,9 @@ func (r *categoryrepository) GetOne(id string) (category *model.Category, errors
 }
 
 func (r *categoryrepository) GetAll(code string) ([]*model.Category, *httperors.HttpError) {
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return nil, t
-	}
-	db, e := Mongorepo.Mongodb()
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
-		return nil, e
+		return nil,e
 	}
 	categorys := []*model.Category{}
 	collection := db.Collection("category")
@@ -113,11 +102,7 @@ func (r *categoryrepository) GetAll(code string) ([]*model.Category, *httperors.
 }
 
 func (r *categoryrepository) Update(code string, category *model.Category) *httperors.HttpError {
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return t
-	}
-	db, e := Mongorepo.Mongodb()
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
 		return e
 	}
@@ -151,13 +136,9 @@ func (r *categoryrepository) Update(code string, category *model.Category) *http
 	return nil
 }
 func (r categoryrepository) Delete(id string) (*httperors.HttpSuccess, *httperors.HttpError) {
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return nil, t
-	}
-	db, e := Mongorepo.Mongodb()
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
-		return nil, e
+		return nil,e
 	}
 	collection := db.Collection("category")
 	filter := bson.M{"_id": id}
@@ -169,13 +150,9 @@ func (r categoryrepository) Delete(id string) (*httperors.HttpSuccess, *httperor
 	return httperors.NewSuccessMessage("deleted successfully"), nil
 }
 func (r categoryrepository) genecode() (string, *httperors.HttpError) {
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return "", t
-	}
-	db, e := Mongorepo.Mongodb()
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
-		return "", e
+		return "",e
 	}
 	collection := db.Collection("category")
 	filter := bson.M{}
@@ -190,13 +167,9 @@ func (r categoryrepository) genecode() (string, *httperors.HttpError) {
 	return code, nil
 }
 func (r categoryrepository) getuno(code string) (result *model.Category, err *httperors.HttpError) {
-	c, t := Mongorepo.Mongoclient()
-	if t != nil {
-		return nil, t
-	}
-	db, e := Mongorepo.Mongodb()
+	db,c, e := Mongorepo.Mongodb()
 	if e != nil {
-		return nil, e
+		return nil,e
 	}
 	collection := db.Collection("category")
 	filter := bson.M{"code": code}

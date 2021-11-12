@@ -25,7 +25,7 @@ func init() {
 	
   }
 func ApiMicroservice() {
-	// repo := repository.New()
+	// repo := repository.New() 
 	// Service := service.NewRedirectService(&repo)
 	// controller := controllers.NewController(Service)
 	controller := controllers.NewController(service.NewRedirectService(repository.New()))

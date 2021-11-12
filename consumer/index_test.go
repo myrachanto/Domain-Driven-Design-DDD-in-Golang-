@@ -1,6 +1,7 @@
 package consumer
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/myrachanto/ddd/model"
@@ -10,6 +11,7 @@ import (
 func TestValidityotheurl(t *testing.T){
 	url := "https://app.basmart.co.ke/front/product/newarrivalss"
 	consumer, err := Consumer.retrivedata(url)	
+	fmt.Println(">>>>>>>>>>>>>>>",err.Message)
 	assert.Equal(t, err.Message, "not found")
 	assert.Equal(t, consumer, nil)
 

@@ -46,7 +46,7 @@ func (c Category) ValidateName() *httperors.HttpError{
 }
 
 func (c Category) ValidateDescription() *httperors.HttpError{
-	if c.Name == "" {
+	if c.Description == "" {
 		return httperors.NewNotFoundError("Invalid Description")
 	}
 	return nil
