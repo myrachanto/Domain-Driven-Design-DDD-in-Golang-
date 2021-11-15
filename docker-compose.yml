@@ -1,0 +1,10 @@
+version: "3"
+services:
+  go-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      -"7001:7001"
+    volumes:
+      - .:/DDD
