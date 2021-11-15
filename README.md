@@ -1,5 +1,5 @@
 # golang-mongo-category-microservice
-a golang mongo micro service 
+a golang mongo micro service with domain driven Archtecture
 
 This project is a simple crud application that manages a category for an ecommerce application - designed to be a micro service with DDD- Domain Driven Design Archtecture in mind.
 
