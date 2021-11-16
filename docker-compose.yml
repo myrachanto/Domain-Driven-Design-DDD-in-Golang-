@@ -14,3 +14,10 @@ services:
       -"7001:7001"
     volumes:
       - .:/DDD
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/DDD
+    command: ["go", "test"]
