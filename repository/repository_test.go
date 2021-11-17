@@ -22,6 +22,8 @@ func TestDbConnectability(t *testing.T){
 	assert.NotNil(t, conn,"test passed the connection to mongo db passed")
 
 }
+//more changes
+
 
 // /more testing
 // func TestDbMongodb(t *testing.T){
