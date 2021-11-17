@@ -22,30 +22,52 @@ var (
 	}
 )
 type CategoryMockInterface interface{
-	Create(category *model.Category) (*httperors.HttpError)
-	GetOne(id string) (category *model.Category, errors *httperors.HttpError)
-	GetAll(code string) ([]*model.Category, *httperors.HttpError)
+	Create(category *model.Category) (*model.Category,*httperors.HttpError)
+	GetOne(id string) (*model.Category, *httperors.HttpError)
+	GetAll() ([]*model.Category, *httperors.HttpError)
 	Update(code string, category *model.Category) (*httperors.HttpError)
-	Delete(id string) (*httperors.HttpSuccess, *httperors.HttpError)
-	Getproducts(code string) ([]model.Product, *httperors.HttpError)
 }
 func (mock MockRepository)Create(category *model.Category) (*model.Category,*httperors.HttpError){
 	args := mock.Called()
 	result := args.Get(0)
-	blog, err := result.(model.Category), args.Error(1)
-	if err != nil {
-		return nil, httperors.NewBadRequestError("Something went wrong creating a product")
+	category, err := result.(*model.Category), args.Error(1)
+	if category.Title == "" {
+		return nil, httperors.NewNotFoundError("test failed category title empty")
 	}
-	return &blog, nil
+	if err != nil {
+		return nil, httperors.NewNotFoundError("test failed")
+	}
+	return category, nil
 }
 func (mock MockRepository)GetOne(id string) (*model.Category, *httperors.HttpError){
 	args := mock.Called()
 	result := args.Get(0)
-	category, err := result.(model.Category), args.Error(1)
+	category, err := result.(*model.Category), args.Error(1)
 	if err != nil {
 		return nil, httperors.NewNotFoundError("test failed")
 	}
-	return &category,nil
+	return category,nil
+}
+func (mock MockRepository)GetAll() ([]*model.Category, *httperors.HttpError){
+	args := mock.Called()
+	result := args.Get(0)
+	categorys, err := result.([]*model.Category), args.Error(1)
+	if err != nil {
+		return nil, httperors.NewNotFoundError("test failed")
+	}
+	return categorys, nil
+}
+func (mock MockRepository)Update(code string, category *model.Category) (*httperors.HttpError){
+	args := mock.Called()
+	result := args.Get(0)
+	category, err := result.(*model.Category), args.Error(1)
+	if category.Title == "" {
+		return httperors.NewNotFoundError("test failed category title empty")
+	}
+	if err != nil {
+		return httperors.NewNotFoundError("test failed")
+	}
+	return nil
 }
 func TestCategoryNameValidate(t *testing.T){ 
 	category = &model.Category{
@@ -80,27 +102,39 @@ func TestCategoryDescriptionValidate(t *testing.T){
 	assert.NotNil(t, err)
 	assert.Equal(t, expected, err.Message)
 }
-func TestCreatedCategory(t *testing.T){
-	mockRepo := new(MockRepository)	
+func TestGetAll(t *testing.T){
+	mockRepo := new(MockRepository)
+	category := &model.Category{
+		Name: "name",
+		Title: "tiltes",
+		Description: "description",
+	}
 	//set up expecctations
-	mockRepo.On("Create").Return([]*model.Category{category} ,nil)
-	results, _ := mockRepo.Create(category)
+	mockRepo.On("GetAll").Return([]*model.Category{category} ,nil)
+	results, _ := mockRepo.GetAll()
 	//mock assertion: behavioral
 	mockRepo.AssertExpectations(t)
 	//data assertion
-	assert.Equal(t, "name of the category", results.Name)
-	assert.Equal(t, "title", results.Title)
-	assert.Equal(t, "description of the category", results.Description)
+	assert.Equal(t, "name", results[0].Name)
+	assert.Equal(t, "tiltes", results[0].Title)
+	assert.Equal(t, "description", results[0].Description)
+
 
 }
 func TestCreate(t *testing.T){
-	mockRepo := new(MockRepository)	
-	//set up expecctations
-	mockRepo.On("Create").Return([]*model.Category{category} ,nil)
-	_, err := mockRepo.Create(category)
-	//mock assertion: behavioral
-	mockRepo.AssertExpectations(t)
-	//data assertion
-	assert.Equal(t, err.Message, "Something went wrong creating a product")
+	mockRepo := new(MockRepository)
+	category := &model.Category{
+		Name: "name",
+		Title: "tiltes",
+		Description: "description",}
+		mockRepo.On("Create").Return(category, nil)
+		result, err := mockRepo.Create(category)
+		//mock assertion: behavioral
+		mockRepo.AssertExpectations(t)
+		//data assertion
+		assert.Equal(t, "name", result.Name)
+		assert.Equal(t, "tiltes", result.Title)
+		assert.Equal(t, "description", result.Description)
+		assert.Nil(t, err)
 
 }
