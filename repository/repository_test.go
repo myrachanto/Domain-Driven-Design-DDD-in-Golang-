@@ -22,6 +22,8 @@ func TestDbConnectability(t *testing.T){
 	assert.Equal(t, expected, conn,"test passed the connection to mongo db passed")
 
 }
+
+// /more testing
 // func TestDbMongodb(t *testing.T){
 // 	mongodb, client := Mongorepo.Mongodb()
 // }
