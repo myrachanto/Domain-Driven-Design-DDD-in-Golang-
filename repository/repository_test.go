@@ -1,22 +1,29 @@
 package repository
 
 import (
+	// "fmt"
 	"testing"
+
 	"github.com/stretchr/testify/assert"
+	// "github.com/myrachanto/ddd/httperors"
 )
 func TestGethost(t *testing.T){
-	Mongorepo.gethost()	
-	expected := "Mongohost"
-	assert.Equal(t, expected, Host)
+	host, err := Mongorepo.Gethost()	
+	// expected := "mongodb://localhost:27017"
+	// fmt.Println(">>>>>>>>>>>>", err)
+	assert.Nil(t, err, "the error is nil ")
+	assert.NotNil(t, host,"test passed the host is equal to Mongohost")
 }
 func TestDbConnectability(t *testing.T){
 	client, _ := Mongorepo.Mongoclient()
     conn, err := Mongorepo.DBPing(client)
-	expected := "Db connection was succesiful"
-	assert.Equal(t, nil, err)
-	assert.Equal(t, expected, conn)
+	// expected := "Db connection was succesiful"
+	assert.Nil(t, err, "the error is nil ")
+	assert.NotNil(t, conn,"test passed the connection to mongo db passed")
 
 }
+
+// /more testing
 // func TestDbMongodb(t *testing.T){
 // 	mongodb, client := Mongorepo.Mongodb()
 // }

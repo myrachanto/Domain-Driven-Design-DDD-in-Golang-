@@ -1,11 +1,10 @@
 package repository
 
 import(
-	"os"
 	"log"
 	"fmt"
 	"context"
-	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
     // "go.mongodb.org/mongo-driver/bson"
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
@@ -17,17 +16,34 @@ var (
 	ctx = context.TODO()
 	Host string = ""
 )
+type Open struct {
+	Mongohost string `mapstructure:"Mongohost"`
+	MongodbName  string `mapstructure:"MongodbName"`
+}
 type mongorepointerface interface{
 	Mongoclient()(*mongo.Client, *httperors.HttpError)
 	Mongodb()(*mongo.Database,*mongo.Client, *httperors.HttpError)
 	DbClose(client *mongo.Client)
-	gethost()*httperors.HttpError
+	Gethost()(string,*httperors.HttpError)
 	DBPing(p *mongo.Client)(string,*httperors.HttpError)
 }
 type mongorepo struct{}
+func LoadConfig() (open Open, err error) {
+	viper.AddConfigPath("../")
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
 
+	viper.AutomaticEnv()
+
+	err = viper.ReadInConfig()
+	if err != nil {
+		return
+	}
+	err = viper.Unmarshal(&open)
+	return
+}
 func (m *mongorepo)Mongoclient()(*mongo.Client, *httperors.HttpError){
-	m.gethost()
+	m.Gethost()
 	clientOptions := options.Client().ApplyURI(Host)
 	client, err6 := mongo.Connect(ctx, clientOptions)
 		if err6 != nil {
@@ -36,13 +52,12 @@ func (m *mongorepo)Mongoclient()(*mongo.Client, *httperors.HttpError){
 	return client, nil
 }
 func (m *mongorepo)Mongodb()(*mongo.Database,*mongo.Client, *httperors.HttpError){
-	err7 := godotenv.Load()
-	if err7 != nil {
-		return nil, nil, httperors.NewBadRequestError("error loading env file")
+	open, err := LoadConfig()
+	if err != nil {
+		log.Fatal("cannot load config:", err)
 	}
-	mongodb := os.Getenv("MongodbName")
 	client, err1 := m.Mongoclient()
-	db := client.Database(mongodb)
+	db := client.Database(open.MongodbName)
 	return db,client, err1
 }
 func (m *mongorepo)DbClose(client *mongo.Client){
@@ -52,14 +67,14 @@ func (m *mongorepo)DbClose(client *mongo.Client){
 	}
 	fmt.Println("Connection to MongoDB closed.")
 }
-func (m *mongorepo)gethost()*httperors.HttpError{
-	err := godotenv.Load()
+func (m *mongorepo)Gethost()(string,*httperors.HttpError){
+	open, err := LoadConfig()
 	if err != nil {
-		return  httperors.NewBadRequestError("error loading env file")
+		log.Fatal("cannot load config:", err)
 	}
-	host := os.Getenv("Mongohost")
+	host := open.Mongohost
 	Host = host
-	return nil
+	return host,nil
 }
 func (m *mongorepo)DBPing(p *mongo.Client)(string,*httperors.HttpError){
 	err8 := p.Ping(ctx, nil)
