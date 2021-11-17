@@ -17,9 +17,9 @@ var Consumer consumerinterface = &consumer{}
 
 type consumerinterface interface{
 	GetData(string, *model.Prods, string) ([]model.Product, *httperors.HttpError)
-	retrivedata(url string)(*http.Response,*httperors.HttpError)
-	readdata(f io.Reader)([]byte,*httperors.HttpError)
-	marshajson(d []byte, pd *model.Prods,)(*model.Prods,*httperors.HttpError)
+	Retrivedata(url string)(*http.Response,*httperors.HttpError)
+	Readdata(f io.Reader)([]byte,*httperors.HttpError)
+	Marshajson(d []byte, pd *model.Prods,)(*model.Prods,*httperors.HttpError)
 	Tocsv(data []model.Product, file string)*httperors.HttpError
 	Convertboolstring(sd bool) string
 	Converstservices(serv []model.Service) string
@@ -29,22 +29,22 @@ type consumer struct {
 
 }
 func (c consumer)GetData(Url string, pd *model.Prods, file string) ([]model.Product, *httperors.HttpError){
-	resp,e := c.retrivedata(Url)
+	resp,e := c.Retrivedata(Url)
 	if e != nil {
 		return nil, e
 	}	
-	r,e := c.readdata(resp.Body)
+	r,e := c.Readdata(resp.Body)
 	if e != nil {
 		return nil, e
 	}
-	js,e := c.marshajson(r, pd)
+	js,e := c.Marshajson(r, pd)
 	if e != nil {
 		return nil, e
 	}
 	c.Tocsv(js.Product, file)
 return pd.Product, nil
 }
-func (c consumer)retrivedata(url string)(*http.Response,*httperors.HttpError){
+func (c consumer)Retrivedata(url string)(*http.Response,*httperors.HttpError){
 	resp, err := http.Get(url)
 	log.Info("resp retrived")
 	if err != nil {
@@ -53,7 +53,7 @@ func (c consumer)retrivedata(url string)(*http.Response,*httperors.HttpError){
 	}
 	return resp, nil
 }
-func (c consumer)readdata(f io.Reader)([]byte,*httperors.HttpError){
+func (c consumer)Readdata(f io.Reader)([]byte,*httperors.HttpError){
 	respo, err := ioutil.ReadAll(f)
 	log.Info("respo read from resp.body")
 	if err != nil {
@@ -62,7 +62,7 @@ func (c consumer)readdata(f io.Reader)([]byte,*httperors.HttpError){
 	}
 	return respo, nil
 }
-func (c consumer)marshajson(d []byte, pd *model.Prods,)(*model.Prods,*httperors.HttpError){
+func (c consumer)Marshajson(d []byte, pd *model.Prods,)(*model.Prods,*httperors.HttpError){
 	err1 := json.Unmarshal([]byte(d), &pd)
 	if err1 != nil {
 		log.Warn("respo failed json marshal")
