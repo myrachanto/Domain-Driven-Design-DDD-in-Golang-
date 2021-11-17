@@ -12,7 +12,7 @@ func TestValidityotheurl(t *testing.T){
 	url := "https://app.basmart.co.ke/front/product/newarrivalss"
 	consumer, err := Consumer.Retrivedata(url)	
 	fmt.Println(">>>>>>>>>>>>>>>>>>>>", err)
-	// assert.Nil(t, err, "the test passed even with the wrong address there is a response")
+	assert.Nil(t, err, "the test passed even with the wrong address there is a response")
 	assert.NotNil(t, consumer, "the responsecd results must not be equal to nil")
 
 }
