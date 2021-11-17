@@ -1,5 +1,3 @@
-# github.com/bndr/gopencils v0.0.0-20161113114152-22e283ad7611
-## explicit
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/go-stack/stack v1.8.0
@@ -17,26 +15,20 @@ github.com/klauspost/compress/huff0
 github.com/klauspost/compress/snappy
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
-# github.com/labstack/echo v3.3.10+incompatible
-## explicit
 # github.com/labstack/echo/v4 v4.5.0
 ## explicit
 github.com/labstack/echo/v4
 github.com/labstack/echo/v4/middleware
 # github.com/labstack/gommon v0.3.0
-## explicit
 github.com/labstack/gommon/bytes
 github.com/labstack/gommon/color
 github.com/labstack/gommon/log
 github.com/labstack/gommon/random
 # github.com/mattn/go-colorable v0.1.8
-## explicit
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.13
 ## explicit
 github.com/mattn/go-isatty
-# github.com/mercadolibre/golang-restclient v0.0.0-20170701022150-51958130a0a0
-## explicit
 # github.com/pkg/errors v0.9.1
 github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
@@ -53,7 +45,6 @@ github.com/stretchr/testify/mock
 # github.com/valyala/bytebufferpool v1.0.0
 github.com/valyala/bytebufferpool
 # github.com/valyala/fasttemplate v1.2.1
-## explicit
 github.com/valyala/fasttemplate
 # github.com/xdg-go/pbkdf2 v1.0.0
 github.com/xdg-go/pbkdf2
