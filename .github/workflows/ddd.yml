@@ -9,20 +9,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    mongodb:
-      image: mongo
-      env:
-        # MONGO_INITDB_ROOT_USERNAME: test
-        # MONGO_INITDB_ROOT_PASSWORD: password
-        MONGO_INITDB_DATABASE: domain
-      options:
-        --health-cmd mongo
-        --health-interval 10s
-        --health-timeout 5s
-        --health-retries 5
-      ports:
-        - 27017:27017
+    services:
+      mongodb:
+        image: mongo
+        env:
+          # MONGO_INITDB_ROOT_USERNAME: test
+          # MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: domain
+        options:
+          --health-cmd mongo
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017        
     steps:
     - uses: actions/checkout@v2
     - name: Set up Go
