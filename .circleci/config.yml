@@ -13,10 +13,10 @@ jobs:
         environment:
           - MONGODB_USERNAME: "myrootuser"
           - MONGODB_PASSWORD: "mypassword"
-    working_directory: /go/src/github.com/myrachanto/DDD
-    steps:
-      - checkout
-      - run: go test -v ./...
+        working_directory: /go/src/github.com/myrachanto/DDD
+        steps:
+          - checkout
+          - run: go test -v ./...
 
 
 
