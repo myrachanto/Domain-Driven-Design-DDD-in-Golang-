@@ -28,7 +28,7 @@ func NewBadRequestError(message string) *HttpError {
 func NewNotFoundError(message string) *HttpError {
 	return &HttpError{
 		Message: message,
-		Code:    http.StatusBadRequest,
+		Code:    http.StatusNotFound,
 		Error:   "Not Found",
 	}
 }
@@ -37,12 +37,5 @@ func NewSuccessMessage(message string) *HttpSuccess {
 		Message: message,
 		Code:    http.StatusOK,
 		Error:   "Delete success",
-	}
-}
-func NewNoResultsMessage(message string) *HttpSuccess {
-	return &HttpSuccess{
-		Message: message,
-		Code:    http.StatusOK,
-		Error:   "No Results found",
 	}
 }
