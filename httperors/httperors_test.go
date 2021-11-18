@@ -24,3 +24,11 @@ func TestNewNotFoundError(t *testing.T){
 	assert.EqualValues(t, "Not Found", err.Error)
 
 }
+func TestNewSuccessMessage(t *testing.T){
+	err := NewSuccessMessage("Deletion was a success")
+	assert.NotNil(t,err)
+	assert.EqualValues(t, http.StatusOK, err.Code)
+	assert.EqualValues(t, "Deletion was a success", err.Message)
+	assert.EqualValues(t, "Delete success", err.Error)
+
+}
