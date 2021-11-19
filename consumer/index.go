@@ -66,7 +66,7 @@ func (c consumer)Marshajson(d []byte, pd *model.Prods,)(*model.Prods,*httperors.
 	err1 := json.Unmarshal([]byte(d), &pd)
 	if err1 != nil {
 		log.Warn("respo failed json marshal")
-		return nil, httperors.NewBadRequestError("Something went wrong UNmasharling!!!")
+		return nil, httperors.NewBadRequestError("Something went wrong Unmasharling!!!")
 	}
 	return pd, nil
 }
