@@ -30,7 +30,7 @@ func TestValidityotheurl(t *testing.T){
 				t.Error("did not expect an error but got one")
 			}
 		}
-		if got.StatusCode != tt.code{
+		if got.StatusCode == tt.code{
 			assert.EqualValues(t, got.StatusCode, tt.code, "success")
 		}
 		if got.Body != nil{
