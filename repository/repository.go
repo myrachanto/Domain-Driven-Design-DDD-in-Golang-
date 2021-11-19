@@ -11,10 +11,11 @@ import(
 	"github.com/myrachanto/ddd/httperors"
 	// "github.com/myrachanto/asokomonolith/support"
 )
+// Mongorepo
 var (
 	Mongorepo mongorepointerface = &mongorepo{}
 	ctx = context.TODO()
-	Host string = ""
+	Host string = "" 
 )
 type Open struct {
 	Mongohost string `mapstructure:"Mongohost"`
@@ -26,7 +27,7 @@ type mongorepointerface interface{
 	DbClose(client *mongo.Client)
 	Gethost()(string,*httperors.HttpError)
 	DBPing(p *mongo.Client)(string,*httperors.HttpError)
-}
+} 
 type mongorepo struct{}
 func LoadConfig() (open Open, err error) {
 	viper.AddConfigPath("../")

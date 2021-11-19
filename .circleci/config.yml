@@ -10,9 +10,9 @@ jobs:
       - image: circleci/golang:1.17
       - image: mongo:4.2.0
         port: 27017:27017
-        environment:
-          - MONGODB_USERNAME: "myrootuser"
-          - MONGODB_PASSWORD: "mypassword"
+        # environment:
+          # - MONGODB_USERNAME: "myrootuser"
+          # - MONGODB_PASSWORD: "mypassword"
     working_directory: /go/src/github.com/myrachanto/DDD
     steps:
       - checkout
