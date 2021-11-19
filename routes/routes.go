@@ -11,6 +11,7 @@ import (
 )
 type Port struct {
 	PORT string `mapstructure:"PORT"`
+	EncryptionKey string `mapstructure:"EncryptionKey"`
 }
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
@@ -54,15 +55,21 @@ func ApiMicroservice() {
 	// Middleware
 	log.Info("app initialized")
 	e.Use(middleware.Logger())
-	e.Use(middleware.Recover()) 
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
+	JWTgroup := e.Group("/api")
+	JWTgroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningMethod: "HS256",
+		SigningKey: []byte(open.EncryptionKey),
+	}))
 	// Routes
-	e.POST("/categorys", controller.Create)
-	e.GET("/categorys", controller.GetAll)
-	e.GET("/categorys/:id", controller.GetOne)
-	e.GET("/products", controller.Getproducts)
-	e.PUT("/categorys/:id", controller.Update)
-	e.DELETE("/categorys/:id", controller.Delete)
+	JWTgroup.POST("/categorys", controller.Create)
+	JWTgroup.GET("/categorys", controller.GetAll)
+	JWTgroup.GET("/categorys/:id", controller.GetOne)
+	JWTgroup.GET("/products", controller.Getproducts)
+	JWTgroup.PUT("/categorys/:id", controller.Update)
+	JWTgroup.DELETE("/categorys/:id", controller.Delete)
 
 	// Start server
 	e.Logger.Fatal(e.Start(open.PORT))

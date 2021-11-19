@@ -6,6 +6,13 @@ services:
     environment:
      # MONGO_INITDB_ROOT_USERNAME: root
       #MONGO_INITDB_ROOT_PASSWORD: example
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '7001:80'
   go-app:
     build:
       context: .
