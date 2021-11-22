@@ -55,7 +55,7 @@ jobs:
     # - name pu
   tag:
     name: Tag
-    needs: [test]
+    needs: [build]
     runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
@@ -69,7 +69,7 @@ jobs:
           tag_prefix: ""
   docker:
     name: Build Docker Image
-    needs: [tag]
+    needs: [v1]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
