@@ -7,12 +7,12 @@ import(
 )
 
 type Category struct {
-	ID       primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Name        string        `json:"name,omitempty"`
-	Title       string        `json:"title,omitempty"`
-	Description string        `json:"description,omitempty"`
-	Code        string        `json:"code,omitempty"`
-	Base        `json:"base,omitempty"`
+	ID          primitive.ObjectID `json:"_id" bson:"_id"`
+	Name        string             `json:"name"`
+	Title       string             `json:"title"`
+	Description string             `json:"description"`
+	Code        string             `json:"code"`
+	Base        `json:"base"`
 }
 type Base struct{
 	Created_At time.Time `bson:"created_at"`

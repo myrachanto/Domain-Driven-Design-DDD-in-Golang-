@@ -27,7 +27,7 @@ type CategoryserviceInterface interface{
 type categoryService struct {
 	respository r.CategoryInterface
 }
-func NewRedirectService(respository r.CategoryInterface) CategoryserviceInterface{
+func NewCategoryService(respository r.CategoryInterface) CategoryserviceInterface{
 	return &categoryService{
 		respository,
 	}

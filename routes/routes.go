@@ -43,10 +43,11 @@ func ApiMicroservice() {
 	if err != nil{
 		log.Panic("Database failed to connect")
 	}
-	// repo := repository.New() 
-	// Service := service.NewRedirectService(&repo)
-	// controller := controllers.NewController(Service)
-	controller := controllers.NewController(service.NewRedirectService(repository.New()))
+	repo := repository.Newcategory() 
+	
+	Service := service.NewCategoryService(repo)
+	controller := controllers.NewController(Service)
+	// controller := controllers.NewController(service.NewRedirectService(repository.Newcategory()))
 	open, err1 := LoadConfig()
 	if err1 != nil {
 		log.Fatal("cannot load config:", err)
