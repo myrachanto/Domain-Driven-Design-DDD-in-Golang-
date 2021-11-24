@@ -23,7 +23,7 @@ type CategoryInterface interface {
 	Delete(id string) (*httperors.HttpSuccess, *httperors.HttpError)
 }
 
-func New() *categoryrepository {
+func Newcategory() *categoryrepository {
 	return &categoryrepository{}
 }
 

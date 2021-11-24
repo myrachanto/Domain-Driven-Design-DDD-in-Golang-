@@ -7,6 +7,8 @@ import (
 	"github.com/myrachanto/ddd/model"
 	"github.com/stretchr/testify/assert"
 )
+var url = "https://app.basmart.co.ke/front/product/newarrivals"
+
 var tests = []struct{
 	url string
 	results interface{}
@@ -15,27 +17,34 @@ var tests = []struct{
 	isErr bool
 }{
 	{url:"https://app.basmart.co.ke/front/product/newarrivals",code:200,errors: nil, isErr:true},
-	{url:"https://app.basmart.co.ke/front/product/newarrivalss",code:400,errors: nil, isErr:true},
+	// {url:"https://app.basmart.co.ke/front/product/newarrivalss",code:400,errors: nil, isErr:true},
+	// {url:"",code:400,errors: nil, isErr:true},
 }
 
-func TestValidityotheurl(t *testing.T){
+func TestValidityotheurl(t *testing.T){ 
 	for _, tt := range tests {
-		got,err := Consumer.Retrivedata(tt.url)
-		if tt.isErr{
-			if err == nil{
-				assert.Nil(t, err, "the test passed even with the wrong address there is a response")
-			}
+		if tt.url != url {
+			assert.EqualValues(t, url, tt.url, "this is the wrong url")			
 		}else{
-			if err != nil {
-				t.Error("did not expect an error but got one")
+			got,err := Consumer.Retrivedata(tt.url)
+				if tt.isErr{
+					if err == nil{
+						assert.Nil(t, err, "the test passed even with the wrong address there is a response")
+					}
+				}else{
+					if err != nil {
+						t.Error("did not expect an error but got one")
+					}
+				}
+				if got.StatusCode == tt.code{
+					assert.EqualValues(t, got.StatusCode, tt.code, "success")
+				}
+				if got.Body != nil{
+					assert.NotNil(t, got.Body, "the responsecd results must not be equal to nil")
 			}
+
 		}
-		if got.StatusCode == tt.code{
-			assert.EqualValues(t, got.StatusCode, tt.code, "success")
-		}
-		if got.Body != nil{
-			assert.NotNil(t, got.Body, "the responsecd results must not be equal to nil")
-	   }
+		
 	}
 	// url := "https://app.basmart.co.ke/front/product/newarrivalss"
 	// consumer, err := Consumer.Retrivedata(url)	
