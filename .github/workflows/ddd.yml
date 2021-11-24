@@ -122,7 +122,7 @@ jobs:
         with:
           file: ./nginx/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/golang-ddd:${{needs.tag.outputs.new_tag}}
+          tags: ${{ secrets.DOCKER_USERNAME }}/nginx server:${{needs.tag.outputs.new_tag}}
 
   # nginx:
   #   name: Build Docker nginx Image
