@@ -35,24 +35,7 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-    # - name: BUild Docker Image
-    #   run: docker build . --tag my-image-name:$(date +%s)
-
-    # - name: Publish to Docker Hub
-    #   uses: elgohr/Publish-Docker-Github-Action@master
-    #   with:
-    #     ## the name of our image
-    #     name: forbsey/go-api
-    #     ## Here we pass in our Docker Username
-    #     username: ${{ secrets.DOCKER_USERNAME }}
-    #     ## and our Docker password which 
-    #     password: ${{ secrets.DOCKER_PASSWORD }}
-    #   # env:
-      #   DOCKER_USER: ${{secrets.DOCKER_USERNAME}}
-      #   DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      # run:
-      #   docker
-    # - name pu
+      
   tag:
     name: Tag
     needs: [build]
