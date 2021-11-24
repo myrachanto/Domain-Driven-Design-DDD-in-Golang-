@@ -122,6 +122,7 @@ jobs:
           
   nginx:
     name: Build Docker nginx Image
+    needs: [tag]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -135,7 +136,7 @@ jobs:
         run: docker build . --file ./nginx/Dockerfile --tag chamodshehanka/node-test:$(date +%s)
 
       - name: Docker Push
-        run: docker push ${{secrets.DOCKER_USERNAME}}/ddd_nginx_server
+        run: docker push ${{secrets.DOCKER_USERNAME}}/ddd_nginx_server:${{needs.tag.outputs.new_tag}}
 
 
   # deploy:
