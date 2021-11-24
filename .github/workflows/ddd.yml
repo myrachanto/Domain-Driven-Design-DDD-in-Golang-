@@ -119,10 +119,10 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/golang-ddd:${{needs.tag.outputs.new_tag}}
+          
   nginx:
     name: Build Docker nginx Image
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: docker login
@@ -131,11 +131,11 @@ jobs:
           DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
         run: |
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        - name: Build the nginx docker image
-          run: docker build . --file ./nginx/Dockerfile --tag chamodshehanka/node-test:$(date +%s)
+      - name: Build the nginx docker image
+        run: docker build . --file ./nginx/Dockerfile --tag chamodshehanka/node-test:$(date +%s)
 
-        - name: Docker Push
-          run: docker push ${{secrets.DOCKER_USERNAME}}/ddd_nginx_server
+      - name: Docker Push
+        run: docker push ${{secrets.DOCKER_USERNAME}}/ddd_nginx_server
 
 
   # deploy:
