@@ -9,23 +9,24 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
+
 type Port struct {
-	PORT string `mapstructure:"PORT"`
+	PORT          string `mapstructure:"PORT"`
 	EncryptionKey string `mapstructure:"EncryptionKey"`
 }
+
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
 	log.SetFormatter(&log.TextFormatter{
 		DisableColors: false,
 		FullTimestamp: true,
-		
 	})
 	log.SetFormatter(&log.JSONFormatter{})
 	// log.SetReportCaller(true)
-	
-  }
-  func LoadConfig() (port Port, err error) {
-	viper.AddConfigPath("../")
+
+}
+func LoadConfig() (port Port, err error) {
+	viper.AddConfigPath(".")
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 
@@ -39,18 +40,21 @@ func init() {
 	return
 }
 func ApiMicroservice() {
-	_,err := repository.Mongorepo.Mongoclient()
-	if err != nil{
+
+	_, err := repository.Mongorepo.Mongoclient()
+	if err != nil {
 		log.Panic("Database failed to connect")
 	}
-	repo := repository.Newcategory() 
-	
+
+	repo := repository.Newcategory()
+
 	Service := service.NewCategoryService(repo)
 	controller := controllers.NewController(Service)
+
 	// controller := controllers.NewController(service.NewRedirectService(repository.Newcategory()))
 	open, err1 := LoadConfig()
 	if err1 != nil {
-		log.Fatal("cannot load config:", err)
+		log.Fatal("cannot load config:", err1)
 	}
 	e := echo.New()
 	// Middleware
@@ -62,7 +66,7 @@ func ApiMicroservice() {
 	JWTgroup := e.Group("/api")
 	JWTgroup.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS256",
-		SigningKey: []byte(open.EncryptionKey),
+		SigningKey:    []byte(open.EncryptionKey),
 	}))
 	// Routes
 	JWTgroup.POST("/categorys", controller.Create)

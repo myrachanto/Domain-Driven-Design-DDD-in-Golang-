@@ -1,17 +1,12 @@
-FROM golang:1.16-alpine
+FROM golang:alpine
 
-RUN mkdir -p /DDD
-
-WORKDIR /DDD
-
-COPY go.mod ./
-COPY go.sum ./
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
 RUN go mod download
 
 COPY . .
 
-RUN go build -o /DDD
+RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATh)/bin
 
-EXPOSE 8080
-
-CMD [ "./DDD" ]
+CMD ["air"]
